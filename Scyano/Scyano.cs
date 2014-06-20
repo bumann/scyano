@@ -9,7 +9,7 @@ namespace Scyano
 
     public class Scyano : IScyano
     {
-        private readonly object locker;
+        private readonly object queueLock;
         private readonly Queue<object> messageQueue;
         private readonly CancellationTokenSource cancellationTokenSource;
         private object messageConsumer;
@@ -18,7 +18,7 @@ namespace Scyano
 
         public Scyano()
         {
-            this.locker = new object();
+            this.queueLock = new object();
             this.messageQueue = new Queue<object>();
             this.cancellationTokenSource = new CancellationTokenSource();
         }
@@ -62,29 +62,14 @@ namespace Scyano
                 return;
             }
 
-            lock (this.locker)
-            {
-                this.cancellationTokenSource.Cancel();
-                Monitor.PulseAll(this.locker);
-            }
+            this.cancellationTokenSource.Cancel();
 
-            var stopTask = new Task(
-                () =>
-                    {
-                        this.worker.Wait(TimeSpan.FromSeconds(4));
-                        this.worker = null;
-                    });
-
-            stopTask.Start();
+            Task.Run(() => this.WaitForWorkerTermination());
         }
 
         public void Enqueue(object message)
         {
-            lock (this.locker)
-            {
-                this.messageQueue.Enqueue(message);
-                Monitor.PulseAll(this.locker);
-            }
+            Task.Run(() => this.EnqueueMessage(message));
         }
 
         /// <summary>
@@ -127,17 +112,38 @@ namespace Scyano
         {
             while (!this.worker.IsCanceled)
             {
-                Monitor.Wait(this.locker);
+                Monitor.Enter(this.queueLock);
 
-                object message;
-                lock (this.locker)
+                object message = null;
+                if (this.messageQueue.Count > 0)
                 {
                     message = this.messageQueue.Dequeue();
-                    Monitor.PulseAll(this.locker);
                 }
 
-                this.messageConsumerMethodInfo.Invoke(this.messageConsumer, new[] { message });
+                Monitor.PulseAll(this.queueLock);
+                Monitor.Exit(this.queueLock);
+
+                if (message != null)
+                {
+                    this.messageConsumerMethodInfo.Invoke(this.messageConsumer, new[] { message });
+                }
             }
+        }
+
+        private void EnqueueMessage(object message)
+        {
+            Monitor.Enter(this.queueLock);
+            
+            this.messageQueue.Enqueue(message);
+            
+            Monitor.PulseAll(this.queueLock);
+            Monitor.Exit(this.queueLock);
+        }
+
+        private void WaitForWorkerTermination()
+        {
+            this.worker.Wait(TimeSpan.FromSeconds(4));
+            this.worker = null;
         }
     }
 }
