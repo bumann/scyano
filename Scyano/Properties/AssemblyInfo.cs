@@ -5,7 +5,7 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Scyano")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Simple helper that provides message queuing for any class.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Bumann")]
 [assembly: AssemblyProduct("Scyano")]
