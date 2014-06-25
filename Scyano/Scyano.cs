@@ -72,6 +72,20 @@ namespace Scyano
             Task.Run(() => this.EnqueueMessage(message));
         }
 
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.cancellationTokenSource.Dispose();
+            }
+        }
+
         /// <summary>
         /// Checks the messageQueueConsumer for the MessageConsumer attribute by reflection.
         /// If there is no valid MessageConsumer attribute, an exception is thrown.
