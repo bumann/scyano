@@ -37,10 +37,24 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\IScyanoMethodInfo.cs" />
+    <Compile Include="Core\ScyanoMethodInfo.cs" />
+    <Compile Include="Core\ScyanoTaskExecutor.cs" />
+    <Compile Include="Tasks\DequeueTask.cs" />
+    <Compile Include="Core\ScyanoFireAndForgetTask.cs" />
+    <Compile Include="Core\IScyanoTokenSource.cs" />
+    <Compile Include="Tasks\IDequeueTask.cs" />
+    <Compile Include="Core\IScyanoFireAndForgetTask.cs" />
+    <Compile Include="IMessageConsumerRetriever.cs" />
+    <Compile Include="IMessageQueueController.cs" />
     <Compile Include="IScyano.cs" />
     <Compile Include="MessageConsumerAttribute.cs" />
+    <Compile Include="MessageConsumerRetriever.cs" />
+    <Compile Include="MessageQueueController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scyano.cs" />
+    <Compile Include="Core\IScyanoTask.cs" />
+    <Compile Include="Core\IScyanoTaskExecutor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

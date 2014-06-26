@@ -1,8 +1,6 @@
 namespace Scyano
 {
-    using System;
-
-    public interface IScyano : IDisposable
+    public interface IScyano
     {
         void Initialize(object messageConsumer);
 
