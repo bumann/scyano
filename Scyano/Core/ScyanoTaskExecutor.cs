@@ -3,7 +3,7 @@
     using System;
     using System.Threading.Tasks;
 
-    internal class ScyanoTaskExecutor : IScyanoTaskExecutor
+    public class ScyanoTaskExecutor : IScyanoTaskExecutor
     {
         private readonly IScyanoTokenSource scyanoTokenSource;
         private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;

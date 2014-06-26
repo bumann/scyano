@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Threading;
 
-    internal class MessageQueueController : IMessageQueueController
+    public class MessageQueueController : IMessageQueueController
     {
         private readonly object queueLock;
         private readonly Queue<object> messageQueue;

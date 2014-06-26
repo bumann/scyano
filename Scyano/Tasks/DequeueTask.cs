@@ -2,7 +2,7 @@
 {
     using Core;
 
-    internal class DequeueTask : IDequeueTask
+    public class DequeueTask : IDequeueTask
     {
         private object messageConsumer;
         private IScyanoMethodInfo messageConsumerMethodInfo;

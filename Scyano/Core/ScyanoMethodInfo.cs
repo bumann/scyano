@@ -5,7 +5,7 @@
     /// <summary>
     /// Wrapper class for proper TDD testing.
     /// </summary>
-    internal class ScyanoMethodInfo : IScyanoMethodInfo
+    public class ScyanoMethodInfo : IScyanoMethodInfo
     {
         private readonly MethodInfo methodInfo;
 

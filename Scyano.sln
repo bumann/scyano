@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scyano", "Scyano\Scyano.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scyano.Test", "Scyano.Test\Scyano.Test.csproj", "{33EFCD2E-788D-4996-9B51-932393355633}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scyano.NinjectExtensions", "Scyano.NinjectExtensions\Scyano.NinjectExtensions.csproj", "{768E4925-4659-4DF5-87C1-A91B2A409D19}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{33EFCD2E-788D-4996-9B51-932393355633}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33EFCD2E-788D-4996-9B51-932393355633}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33EFCD2E-788D-4996-9B51-932393355633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{768E4925-4659-4DF5-87C1-A91B2A409D19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{768E4925-4659-4DF5-87C1-A91B2A409D19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{768E4925-4659-4DF5-87C1-A91B2A409D19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{768E4925-4659-4DF5-87C1-A91B2A409D19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
