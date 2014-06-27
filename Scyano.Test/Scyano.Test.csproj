@@ -58,10 +58,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ScyanoTaskExecutorTest.cs" />
-    <Compile Include="Tasks\DequeueTaskTest.cs" />
-    <Compile Include="MessageConsumerRetrieverTest.cs" />
+    <Compile Include="MessageConsumerRetrieverTest.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MessageQueueControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScyanoTest.cs" />
+    <Compile Include="Tasks\DequeueTaskTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -1,4 +1,4 @@
-﻿namespace Scyano.Test
+﻿namespace Scyano
 {
     using System;
     using Core;

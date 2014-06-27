@@ -8,6 +8,9 @@
 
     public class MessageConsumerRetriever : IMessageConsumerRetriever
     {
+        internal const string NoMessageConsumerMethodSpecified = "Consumer has no message consumer method. Mark the method with [MessageConsumer].";
+        internal const string WrongMessageHandlerSignature = "MessageQueueConsumer has wrong message handler signature. Expected signature is void <MethodName>(<MessageType> message). Method: {0}.{1}";
+
         /// <summary>
         /// Checks the messageQueueConsumer for the MessageConsumer attribute by reflection.
         /// If there is no valid MessageConsumer attribute, an exception is thrown.
@@ -28,7 +31,7 @@
                 {
                     throw new ArgumentException(
                         string.Format(
-                            "MessageQueueConsumer has wrong message handler signature. Expected signature is void <MethodName>(<MessageType> message). Method: {0}.{1}",
+                            WrongMessageHandlerSignature,
                             methodInfo.DeclaringType.FullName,
                             methodInfo.Name));
                 }
@@ -38,7 +41,7 @@
 
             if (methodInfos.Count == 0)
             {
-                throw new ArgumentException("Consumer has no message consumer method. Mark the method with [MessageConsumer].", "messageQueueConsumer");
+                throw new ArgumentException(NoMessageConsumerMethodSpecified, "messageQueueConsumer");
             }
 
             return new ScyanoMethodInfo(methodInfos.First());
