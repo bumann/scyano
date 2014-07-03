@@ -41,6 +41,9 @@
     <Compile Include="Core\ScyanoMethodInfo.cs" />
     <Compile Include="Core\ScyanoTaskExecutor.cs" />
     <Compile Include="Core\ScyanoTokenSource.cs" />
+    <Compile Include="ScyanoFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Tasks\DequeueTask.cs" />
     <Compile Include="Core\ScyanoFireAndForgetTask.cs" />
     <Compile Include="Core\IScyanoTokenSource.cs" />

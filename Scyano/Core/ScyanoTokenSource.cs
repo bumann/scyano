@@ -1,5 +1,6 @@
 ﻿namespace Scyano.Core
 {
+    using System;
     using System.Threading;
 
     public class ScyanoTokenSource : IScyanoTokenSource
@@ -16,14 +17,23 @@
             get { return this.cancellationTokenSource.Token; }
         }
 
-        public void Dispose()
-        {
-            this.cancellationTokenSource.Dispose();
-        }
-
         public void Cancel()
         {
             this.cancellationTokenSource.Cancel();
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.cancellationTokenSource.Dispose();
+            }
         }
     }
 }
