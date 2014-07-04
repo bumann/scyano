@@ -38,9 +38,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\IScyanoMethodInfo.cs" />
+    <Compile Include="Core\IScyanoTokenSourceFactory.cs" />
     <Compile Include="Core\ScyanoMethodInfo.cs" />
     <Compile Include="Core\ScyanoTaskExecutor.cs" />
     <Compile Include="Core\ScyanoTokenSource.cs" />
+    <Compile Include="Core\ScyanoTokenSourceFactory.cs" />
     <Compile Include="ScyanoFactory.cs">
       <SubType>Code</SubType>
     </Compile>

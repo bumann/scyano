@@ -5,14 +5,15 @@
 
     public class ScyanoTaskExecutor : IScyanoTaskExecutor
     {
-        private readonly IScyanoTokenSource scyanoTokenSource;
+        private readonly IScyanoTokenSourceFactory scyanoTokenSourceFactory;
         private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;
+        private IScyanoTokenSource scyanoTokenSource;
         private bool isRunning;
         private Task worker;
 
-        public ScyanoTaskExecutor(IScyanoTokenSource scyanoTokenSource, IScyanoFireAndForgetTask scyanoFireAndForgetTask)
+        public ScyanoTaskExecutor(IScyanoTokenSourceFactory scyanoTokenSourceFactory, IScyanoFireAndForgetTask scyanoFireAndForgetTask)
         {
-            this.scyanoTokenSource = scyanoTokenSource;
+            this.scyanoTokenSourceFactory = scyanoTokenSourceFactory;
             this.scyanoFireAndForgetTask = scyanoFireAndForgetTask;
         }
 
@@ -23,6 +24,7 @@
                 return;
             }
 
+            this.scyanoTokenSource = this.scyanoTokenSourceFactory.Create();
             this.worker = new Task(() => this.Run(task), this.scyanoTokenSource.Token);
             this.worker.Start();
             this.isRunning = true;

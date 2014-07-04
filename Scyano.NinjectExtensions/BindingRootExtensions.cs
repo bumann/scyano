@@ -12,6 +12,7 @@
             
             bindingRoot.Bind<IScyanoMethodInfo>().To<ScyanoMethodInfo>();
             bindingRoot.Bind<IScyanoTokenSource>().To<ScyanoTokenSource>();
+            bindingRoot.Bind<IScyanoTokenSourceFactory>().To<ScyanoTokenSourceFactory>();
             bindingRoot.Bind<IScyanoTaskExecutor>().To<ScyanoTaskExecutor>();
             bindingRoot.Bind<IScyanoFireAndForgetTask>().To<ScyanoFireAndForgetTask>();
             bindingRoot.Bind<IMessageConsumerRetriever>().To<MessageConsumerRetriever>();
