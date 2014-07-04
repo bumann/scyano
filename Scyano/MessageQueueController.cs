@@ -7,11 +7,13 @@
     {
         private readonly object queueLock;
         private readonly Queue<object> messageQueue;
+        private readonly ManualResetEventSlim waitHandle;
 
         public MessageQueueController()
         {
             this.queueLock = new object();
             this.messageQueue = new Queue<object>();
+            this.waitHandle = new ManualResetEventSlim();
         }
 
         public void Enqueue(object message)
@@ -22,21 +24,25 @@
 
             Monitor.PulseAll(this.queueLock);
             Monitor.Exit(this.queueLock);
+
+            this.waitHandle.Set();
         }
 
         public object Dequeue()
         {
             Monitor.Enter(this.queueLock);
 
-            object message = null;
-            if (this.messageQueue.Count > 0)
+            if (this.messageQueue.Count == 0)
             {
-                message = this.messageQueue.Dequeue();
+                Monitor.Exit(this.queueLock);
+                this.waitHandle.Wait();
+                this.waitHandle.Reset();
+                Monitor.Enter(this.queueLock);
             }
 
+            object message = this.messageQueue.Dequeue();
             Monitor.PulseAll(this.queueLock);
             Monitor.Exit(this.queueLock);
-
             return message;
         }
     }

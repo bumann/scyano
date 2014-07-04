@@ -13,14 +13,6 @@
         }
 
         [Fact]
-        public void Dequeue_WhenNothingWasQueued_MustReturnNull()
-        {
-            var result = this.testee.Dequeue();
-
-            result.Should().BeNull();
-        }
-
-        [Fact]
         public void Dequeue_WhenObjectWasQueued_MustReturnQueuedObject()
         {
             var expected = new object();
