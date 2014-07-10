@@ -13,7 +13,7 @@ namespace Scyano
         private readonly IMessageQueueController messageQueueController;
         private readonly IScyanoTaskExecutor scyanoTaskExecutor;
         private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;
-        private readonly IDequeueTask dequeueTask;
+        private readonly IDequeueTaskFactory dequeueTaskFactory;
 
         private object messageConsumer;
         
@@ -22,13 +22,13 @@ namespace Scyano
             IMessageQueueController messageQueueController, 
             IScyanoTaskExecutor scyanoTaskExecutor,
             IScyanoFireAndForgetTask scyanoFireAndForgetTask,
-            IDequeueTask dequeueTask)
+            IDequeueTaskFactory dequeueTaskFactory)
         {
             this.messageConsumerRetriever = messageConsumerRetriever;
             this.messageQueueController = messageQueueController;
             this.scyanoTaskExecutor = scyanoTaskExecutor;
             this.scyanoFireAndForgetTask = scyanoFireAndForgetTask;
-            this.dequeueTask = dequeueTask;
+            this.dequeueTaskFactory = dequeueTaskFactory;
         }
 
         public void Initialize(object messageQueueConsumer)
@@ -44,10 +44,13 @@ namespace Scyano
             }
 
             this.messageConsumer = messageQueueConsumer;
-            this.dequeueTask.Initialize(
-                this.messageConsumer,
-                this.messageConsumerRetriever.Retrieve(this.messageConsumer),
-                this.messageQueueController);
+
+            var dequeueTask = this.dequeueTaskFactory.Create();
+            dequeueTask.Initialize(
+               this.messageConsumer,
+               this.messageConsumerRetriever.Retrieve(this.messageConsumer),
+               this.messageQueueController);
+            this.scyanoTaskExecutor.Initialize(dequeueTask);
         }
 
         public void Start()
@@ -56,13 +59,13 @@ namespace Scyano
             {
                 throw new InvalidOperationException("Scyano is not initialized. Initialize Scyano!");
             }
-
-            this.scyanoTaskExecutor.Start(this.dequeueTask);
+            
+            this.scyanoTaskExecutor.Start();
         }
 
         public void Stop()
         {
-            this.scyanoTaskExecutor.Terminate(TimeSpan.FromSeconds(4));
+            this.scyanoTaskExecutor.Stop();
         }
 
         public void Enqueue(object message)

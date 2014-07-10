@@ -13,7 +13,7 @@
         private readonly Mock<IMessageQueueController> queueController;
         private readonly Mock<IScyanoTaskExecutor> taskExecutor;
         private readonly Mock<IScyanoFireAndForgetTask> enqueueTask;
-        private readonly Mock<IDequeueTask> dequeueTask;
+        private readonly Mock<IDequeueTaskFactory> dequeueTaskFactory;
         private readonly Scyano testee;
 
         public ScyanoTest()
@@ -21,14 +21,14 @@
             this.consumerRetriever = new Mock<IMessageConsumerRetriever>();
             this.queueController = new Mock<IMessageQueueController>();
             this.enqueueTask = new Mock<IScyanoFireAndForgetTask>();
-            this.dequeueTask = new Mock<IDequeueTask>();
+            this.dequeueTaskFactory = new Mock<IDequeueTaskFactory>();
             this.taskExecutor = new Mock<IScyanoTaskExecutor>();
             this.testee = new Scyano(
                 this.consumerRetriever.Object,
                 this.queueController.Object,
                 this.taskExecutor.Object,
                 this.enqueueTask.Object,
-                this.dequeueTask.Object);
+                this.dequeueTaskFactory.Object);
         }
 
         [Fact]
@@ -65,10 +65,12 @@
         public void Start_WhenInitialized_MustExecuteDequeueTask()
         {
             this.testee.Initialize(new Consumer());
+            var dequeueTask = Mock.Of<IDequeueTask>();
+            this.dequeueTaskFactory.Setup(x => x.Create()).Returns(dequeueTask);
 
             this.testee.Start();
 
-            this.taskExecutor.Verify(x => x.Start(this.dequeueTask.Object), Times.Once());
+            this.taskExecutor.Verify(x => x.Start(), Times.Once());
         }
 
         [Fact]
@@ -79,11 +81,11 @@
         }
 
         [Fact]
-        public void Stop_MustTerminateDequeueTask()
+        public void Stop_MustStopTaskExecutor()
         {
             this.testee.Stop();
 
-            this.taskExecutor.Verify(x => x.Terminate(It.IsAny<TimeSpan>()), Times.Once());
+            this.taskExecutor.Verify(x => x.Stop(), Times.Once());
         }
 
         [Fact]

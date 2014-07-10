@@ -1,56 +1,54 @@
 ﻿namespace Scyano.Core
 {
+    using FluentAssertions;
     using Moq;
+    using Xunit;
 
     public class ScyanoTaskExecutorTest
     {
-        private readonly Mock<IScyanoTokenSourceFactory> tokenSourceFactory;
-        private readonly Mock<IScyanoFireAndForgetTask> fireAndForgetTask;
+        private readonly Mock<IScyanoTokenSource> tokenSource;
         private readonly ScyanoTaskExecutor testee;
 
         public ScyanoTaskExecutorTest()
         {
-            this.tokenSourceFactory = new Mock<IScyanoTokenSourceFactory>();
-            this.fireAndForgetTask = new Mock<IScyanoFireAndForgetTask>();
-            this.testee = new ScyanoTaskExecutor(this.tokenSourceFactory.Object, this.fireAndForgetTask.Object);
+            this.tokenSource = new Mock<IScyanoTokenSource>();
+            this.testee = new ScyanoTaskExecutor(this.tokenSource.Object);
         }
 
-        //[Fact]
-        //public void Start_WhenRestartedAfterTerminate_MustNotThrow()
-        //{
-        //    this.testee.Start(Mock.Of<IScyanoTask>());
-        //    this.testee.Terminate(TimeSpan.FromMilliseconds(2));
-        //    var token = new CancellationToken(true);
-        //    this.tokenSourceFactory.Setup(x => x.Token).Returns(token);
+        [Fact]
+        public void Start_MustSetIsRunningToTrue()
+        {
+            this.testee.Start();
 
-        //    this.testee.Invoking(x => x.Start(Mock.Of<IScyanoTask>()))
-        //        .ShouldNotThrow<Exception>();
-        //}
+            this.testee.IsRunning.Should().BeTrue();
+        }
 
-        //[Fact]
-        //public void Terminate_WhenTaskRunning_MustCancelCancellationTokenSource()
-        //{
-        //    this.testee.Start(Mock.Of<IScyanoTask>());
+        [Fact]
+        public void Stop_MustSetIsRunningToFalse()
+        {
+            this.testee.Stop();
 
-        //    this.testee.Terminate(TimeSpan.FromMilliseconds(2));
+            this.testee.IsRunning.Should().BeFalse();
+        }
 
-        //    this.tokenSourceFactory.Verify(x => x.Cancel(), Times.Once());
-        //}
+        [Fact]
+        public void Dispose_MustCancelTokenSource()
+        {
+            this.testee.Initialize(Mock.Of<IScyanoTask>());
 
-        //[Fact]
-        //public void Terminate_WhenTaskAlreadyStopped_MustNotCancelCancellationTokenSource()
-        //{
-        //    this.testee.Terminate(TimeSpan.FromMilliseconds(2));
+            this.testee.Dispose();
 
-        //    this.tokenSourceFactory.Verify(x => x.Cancel(), Times.Never());
-        //}
+            this.tokenSource.Verify(x => x.Cancel(), Times.Once());
+        }
 
-        //[Fact]
-        //public void Dispose_MustDisposeCancellationTokenSource()
-        //{
-        //    this.testee.Dispose();
+        [Fact]
+        public void Dispose_MustDisposeCancellationTokenSource()
+        {
+            this.testee.Initialize(Mock.Of<IScyanoTask>());
 
-        //    this.tokenSourceFactory.Verify(x => x.Dispose(), Times.Once());
-        //}
+            this.testee.Dispose();
+
+            this.tokenSource.Verify(x => x.Dispose(), Times.Once());
+        }
     }
 }

@@ -12,10 +12,15 @@
         {
             var messageConsumerRetriever = new MessageConsumerRetriever();
             var messageQueueController = new MessageQueueController();
-            var scyanoTaskExecutor = new ScyanoTaskExecutor(new ScyanoTokenSourceFactory(), new ScyanoFireAndForgetTask());
+            var scyanoTaskExecutor = new ScyanoTaskExecutor(new ScyanoTokenSource());
             var scyanoFireAndForgetTask = new ScyanoFireAndForgetTask();
-            var dequeueTask = new DequeueTask();
-            return new Scyano(messageConsumerRetriever, messageQueueController, scyanoTaskExecutor, scyanoFireAndForgetTask, dequeueTask);
+            var dequeueTaskFactory = new DequeueTaskFactory();
+            return new Scyano(
+                messageConsumerRetriever,
+                messageQueueController,
+                scyanoTaskExecutor,
+                scyanoFireAndForgetTask,
+                dequeueTaskFactory);
         }
     }
 }

@@ -1,56 +1,56 @@
 ﻿namespace Scyano.Core
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public class ScyanoTaskExecutor : IScyanoTaskExecutor
     {
-        private readonly IScyanoTokenSourceFactory scyanoTokenSourceFactory;
-        private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;
-        private IScyanoTokenSource scyanoTokenSource;
-        private bool isRunning;
+        private readonly object suspender = new object();
+        private readonly IScyanoTokenSource scyanoTokenSource;
         private Task worker;
 
-        public ScyanoTaskExecutor(IScyanoTokenSourceFactory scyanoTokenSourceFactory, IScyanoFireAndForgetTask scyanoFireAndForgetTask)
+        public ScyanoTaskExecutor(IScyanoTokenSource scyanoTokenSource)
         {
-            this.scyanoTokenSourceFactory = scyanoTokenSourceFactory;
-            this.scyanoFireAndForgetTask = scyanoFireAndForgetTask;
+            this.scyanoTokenSource = scyanoTokenSource;
         }
 
-        public void Start(IScyanoTask task)
-        {
-            if (this.isRunning)
-            {
-                return;
-            }
+        public bool IsRunning { get; private set; }
 
-            this.scyanoTokenSource = this.scyanoTokenSourceFactory.Create();
+        public void Initialize(IScyanoTask task)
+        {
             this.worker = new Task(() => this.Run(task), this.scyanoTokenSource.Token);
             this.worker.Start();
-            this.isRunning = true;
         }
 
-        public void Terminate(TimeSpan maxWaitTime)
+        public void Start()
         {
-            if (!this.isRunning)
+            if (this.IsRunning)
             {
                 return;
             }
 
-            this.scyanoTokenSource.Cancel();
-            
-            this.scyanoFireAndForgetTask.Run(
-                () =>
-                {
-                    this.worker.Wait(TimeSpan.FromSeconds(4));
-                    this.worker = null;
-                });
+            this.IsRunning = true;
+            if (Monitor.IsEntered(this.suspender))
+            {
+                Monitor.Exit(this.suspender);
+            }
+        }
 
-            this.isRunning = false;
+        public void Stop()
+        {
+            if (!this.IsRunning)
+            {
+                return;
+            }
+
+            this.IsRunning = false;
+            Monitor.Enter(this.suspender);
         }
 
         public void Dispose()
         {
+            this.scyanoTokenSource.Cancel();
             this.Dispose(true);
             GC.SuppressFinalize(this);
         }
@@ -67,6 +67,10 @@
         {
             while (!this.worker.IsCanceled)
             {
+                lock (this.suspender)
+                {
+                }
+
                 task.Execute();
             }
         }

@@ -1,11 +1,11 @@
 ﻿namespace Scyano.Core
 {
-    using System;
-
     public interface IScyanoTaskExecutor
     {
-        void Start(IScyanoTask task);
+        void Initialize(IScyanoTask task);
 
-        void Terminate(TimeSpan maxWaitTime);
+        void Start();
+
+        void Stop();
     }
 }
