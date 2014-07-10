@@ -47,7 +47,6 @@
     <Compile Include="Tasks\DequeueTask.cs" />
     <Compile Include="Core\ScyanoFireAndForgetTask.cs" />
     <Compile Include="Core\IScyanoTokenSource.cs" />
-    <Compile Include="Tasks\DequeueTaskFactory.cs" />
     <Compile Include="Tasks\IDequeueTask.cs" />
     <Compile Include="Core\IScyanoFireAndForgetTask.cs" />
     <Compile Include="IMessageConsumerRetriever.cs" />
@@ -60,7 +59,6 @@
     <Compile Include="Scyano.cs" />
     <Compile Include="Core\IScyanoTask.cs" />
     <Compile Include="Core\IScyanoTaskExecutor.cs" />
-    <Compile Include="Tasks\IDequeueTaskFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

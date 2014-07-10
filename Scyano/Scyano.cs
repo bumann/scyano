@@ -13,7 +13,7 @@ namespace Scyano
         private readonly IMessageQueueController messageQueueController;
         private readonly IScyanoTaskExecutor scyanoTaskExecutor;
         private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;
-        private readonly IDequeueTaskFactory dequeueTaskFactory;
+        private readonly IDequeueTask dequeueTask;
 
         private object messageConsumer;
         
@@ -22,13 +22,13 @@ namespace Scyano
             IMessageQueueController messageQueueController, 
             IScyanoTaskExecutor scyanoTaskExecutor,
             IScyanoFireAndForgetTask scyanoFireAndForgetTask,
-            IDequeueTaskFactory dequeueTaskFactory)
+            IDequeueTask dequeueTask)
         {
             this.messageConsumerRetriever = messageConsumerRetriever;
             this.messageQueueController = messageQueueController;
             this.scyanoTaskExecutor = scyanoTaskExecutor;
             this.scyanoFireAndForgetTask = scyanoFireAndForgetTask;
-            this.dequeueTaskFactory = dequeueTaskFactory;
+            this.dequeueTask = dequeueTask;
         }
 
         public void Initialize(object messageQueueConsumer)
@@ -45,12 +45,11 @@ namespace Scyano
 
             this.messageConsumer = messageQueueConsumer;
 
-            var dequeueTask = this.dequeueTaskFactory.Create();
-            dequeueTask.Initialize(
+            this.dequeueTask.Initialize(
                this.messageConsumer,
                this.messageConsumerRetriever.Retrieve(this.messageConsumer),
                this.messageQueueController);
-            this.scyanoTaskExecutor.Initialize(dequeueTask);
+            this.scyanoTaskExecutor.Initialize(this.dequeueTask);
         }
 
         public void Start()

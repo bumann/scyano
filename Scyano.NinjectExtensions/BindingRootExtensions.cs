@@ -18,7 +18,6 @@
             bindingRoot.Bind<IMessageQueueController>().To<MessageQueueController>();
 
             bindingRoot.Bind<IDequeueTask>().To<DequeueTask>();
-            bindingRoot.Bind<IDequeueTaskFactory>().To<DequeueTaskFactory>();
 
             return bindingRoot;
         }

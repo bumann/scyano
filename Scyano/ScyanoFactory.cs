@@ -14,13 +14,13 @@
             var messageQueueController = new MessageQueueController();
             var scyanoTaskExecutor = new ScyanoTaskExecutor(new ScyanoTokenSource());
             var scyanoFireAndForgetTask = new ScyanoFireAndForgetTask();
-            var dequeueTaskFactory = new DequeueTaskFactory();
+            var dequeueTask = new DequeueTask();
             return new Scyano(
                 messageConsumerRetriever,
                 messageQueueController,
                 scyanoTaskExecutor,
                 scyanoFireAndForgetTask,
-                dequeueTaskFactory);
+                dequeueTask);
         }
     }
 }

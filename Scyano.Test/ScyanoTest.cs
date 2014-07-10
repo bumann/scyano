@@ -13,7 +13,7 @@
         private readonly Mock<IMessageQueueController> queueController;
         private readonly Mock<IScyanoTaskExecutor> taskExecutor;
         private readonly Mock<IScyanoFireAndForgetTask> enqueueTask;
-        private readonly Mock<IDequeueTaskFactory> dequeueTaskFactory;
+        private readonly Mock<IDequeueTask> dequeueTask;
         private readonly Scyano testee;
 
         public ScyanoTest()
@@ -21,14 +21,14 @@
             this.consumerRetriever = new Mock<IMessageConsumerRetriever>();
             this.queueController = new Mock<IMessageQueueController>();
             this.enqueueTask = new Mock<IScyanoFireAndForgetTask>();
-            this.dequeueTaskFactory = new Mock<IDequeueTaskFactory>();
+            this.dequeueTask = new Mock<IDequeueTask>();
             this.taskExecutor = new Mock<IScyanoTaskExecutor>();
             this.testee = new Scyano(
                 this.consumerRetriever.Object,
                 this.queueController.Object,
                 this.taskExecutor.Object,
                 this.enqueueTask.Object,
-                this.dequeueTaskFactory.Object);
+                this.dequeueTask.Object);
         }
 
         [Fact]
@@ -65,8 +65,6 @@
         public void Start_WhenInitialized_MustExecuteDequeueTask()
         {
             this.testee.Initialize(new Consumer());
-            var dequeueTask = Mock.Of<IDequeueTask>();
-            this.dequeueTaskFactory.Setup(x => x.Create()).Returns(dequeueTask);
 
             this.testee.Start();
 
