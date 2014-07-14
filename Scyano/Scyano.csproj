@@ -37,13 +37,16 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\IScyanoCustomExtension.cs" />
     <Compile Include="Core\IScyanoMethodInfo.cs" />
+    <Compile Include="Core\ScyanoException.cs" />
     <Compile Include="Core\ScyanoMethodInfo.cs" />
     <Compile Include="Core\ScyanoTaskExecutor.cs" />
     <Compile Include="Core\ScyanoTokenSource.cs" />
     <Compile Include="ScyanoFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SkipMessageException.cs" />
     <Compile Include="Tasks\DequeueTask.cs" />
     <Compile Include="Core\ScyanoFireAndForgetTask.cs" />
     <Compile Include="Core\IScyanoTokenSource.cs" />
