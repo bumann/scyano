@@ -1,8 +1,6 @@
 ﻿namespace Scyano
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using Core;
 
@@ -11,18 +9,24 @@
         private readonly object queueLock;
         private readonly Queue<object> messageQueue;
         private readonly ManualResetEventSlim waitHandle;
-        private List<IScyanoCustomExtension> customExtensions;
+        private IList<IScyanoCustomExtension> customExtensions;
 
         public MessageQueueController()
         {
             this.queueLock = new object();
             this.messageQueue = new Queue<object>();
             this.waitHandle = new ManualResetEventSlim();
+            this.customExtensions = new List<IScyanoCustomExtension>();
         }
 
-        public void Initialize(IEnumerable<IScyanoCustomExtension> extensions)
+        public void Add(IScyanoCustomExtension extension)
         {
-            this.customExtensions = extensions.ToList();
+            this.customExtensions.Add(extension);
+        }
+
+        public void Remove(IScyanoCustomExtension extension)
+        {
+            this.customExtensions.Remove(extension);
         }
 
         public void Enqueue(object message)
