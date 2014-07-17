@@ -41,6 +41,7 @@
     <Compile Include="Core\IScyanoMethodInfo.cs" />
     <Compile Include="Core\ScyanoException.cs" />
     <Compile Include="Core\ScyanoMethodInfo.cs" />
+    <Compile Include="Core\ScyanoTask.cs" />
     <Compile Include="Core\ScyanoTaskExecutor.cs" />
     <Compile Include="Core\ScyanoTokenSource.cs" />
     <Compile Include="ScyanoFactory.cs">

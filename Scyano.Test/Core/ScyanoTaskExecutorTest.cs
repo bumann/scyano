@@ -16,17 +16,17 @@
         }
 
         [Fact]
-        public void Start_MustSetIsRunningToTrue()
+        public void StartOrResume_MustSetIsRunningToTrue()
         {
-            this.testee.Start();
+            this.testee.StartOrResume();
 
             this.testee.IsRunning.Should().BeTrue();
         }
 
         [Fact]
-        public void Stop_MustSetIsRunningToFalse()
+        public void Suspend_MustSetIsRunningToFalse()
         {
-            this.testee.Stop();
+            this.testee.Suspend();
 
             this.testee.IsRunning.Should().BeFalse();
         }

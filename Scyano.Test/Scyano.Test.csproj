@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ScyanoTaskExecutorTest.cs" />
+    <Compile Include="Core\ScyanoTaskTest.cs" />
     <Compile Include="MessageConsumerRetrieverTest.cs">
       <SubType>Code</SubType>
     </Compile>

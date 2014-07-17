@@ -31,6 +31,14 @@ namespace Scyano
             this.dequeueTask = dequeueTask;
         }
 
+        public int MessageCount 
+        {
+            get
+            {
+                return this.messageQueueController.MessageCount;
+            }
+        }
+
         public void Initialize(object messageQueueConsumer)
         {
             if (messageQueueConsumer == null)
@@ -59,17 +67,27 @@ namespace Scyano
                 throw new InvalidOperationException("Scyano is not initialized. Initialize Scyano!");
             }
             
-            this.scyanoTaskExecutor.Start();
+            this.scyanoTaskExecutor.StartOrResume();
         }
 
         public void Stop()
         {
-            this.scyanoTaskExecutor.Stop();
+            this.scyanoTaskExecutor.Suspend();
         }
 
         public void Enqueue(object message)
         {
             this.scyanoFireAndForgetTask.Run(() => this.messageQueueController.Enqueue(message));
+        }
+
+        public void Add(IScyanoCustomExtension extension)
+        {
+            this.messageQueueController.Add(extension);
+        }
+
+        public void Remove(IScyanoCustomExtension extension)
+        {
+            this.messageQueueController.Remove(extension);
         }
     }
 }

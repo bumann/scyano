@@ -9,7 +9,7 @@
         private readonly object queueLock;
         private readonly Queue<object> messageQueue;
         private readonly ManualResetEventSlim waitHandle;
-        private IList<IScyanoCustomExtension> customExtensions;
+        private readonly IList<IScyanoCustomExtension> customExtensions;
 
         public MessageQueueController()
         {
@@ -17,6 +17,11 @@
             this.messageQueue = new Queue<object>();
             this.waitHandle = new ManualResetEventSlim();
             this.customExtensions = new List<IScyanoCustomExtension>();
+        }
+
+        public int MessageCount
+        {
+            get { return this.messageQueue.Count; }
         }
 
         public void Add(IScyanoCustomExtension extension)
@@ -64,9 +69,9 @@
 
             if (this.messageQueue.Count == 0)
             {
+                this.waitHandle.Reset();
                 Monitor.Exit(this.queueLock);
                 this.waitHandle.Wait();
-                this.waitHandle.Reset();
                 Monitor.Enter(this.queueLock);
             }
 

@@ -68,7 +68,7 @@
 
             this.testee.Start();
 
-            this.taskExecutor.Verify(x => x.Start(), Times.Once());
+            this.taskExecutor.Verify(x => x.StartOrResume(), Times.Once());
         }
 
         [Fact]
@@ -83,7 +83,7 @@
         {
             this.testee.Stop();
 
-            this.taskExecutor.Verify(x => x.Stop(), Times.Once());
+            this.taskExecutor.Verify(x => x.Suspend(), Times.Once());
         }
 
         [Fact]
@@ -106,6 +106,26 @@
             this.testee.Enqueue(Message);
 
             this.queueController.Verify(x => x.Enqueue(Message), Times.Once());
+        }
+
+        [Fact]
+        public void Add_MustAddExtension()
+        {
+            var extension = new Mock<IScyanoCustomExtension>();
+
+            this.testee.Add(extension.Object);
+
+            this.queueController.Verify(x => x.Add(extension.Object), Times.Once());
+        }
+
+        [Fact]
+        public void Remove_MustRemoveExtension()
+        {
+            var extension = new Mock<IScyanoCustomExtension>();
+
+            this.testee.Remove(extension.Object);
+
+            this.queueController.Verify(x => x.Remove(extension.Object), Times.Once());
         }
 
         private class Consumer

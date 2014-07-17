@@ -17,13 +17,18 @@
 
         public bool IsRunning { get; private set; }
 
+        public void Initialize(Action task)
+        {
+            this.Initialize(new ScyanoTask(task));
+        }
+
         public void Initialize(IScyanoTask task)
         {
             this.worker = new Task(() => this.Run(task), this.scyanoTokenSource.Token);
             this.worker.Start();
         }
 
-        public void Start()
+        public void StartOrResume()
         {
             if (this.IsRunning)
             {
@@ -37,7 +42,7 @@
             }
         }
 
-        public void Stop()
+        public void Suspend()
         {
             if (!this.IsRunning)
             {

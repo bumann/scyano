@@ -7,15 +7,5 @@
         public ScyanoException()
         {
         }
-
-        public ScyanoException(string message)
-            : base(message)
-        {
-        }
-
-        public ScyanoException(string message, Exception innerException)
-            : base(message, innerException)
-        {
-        }
     }
 }

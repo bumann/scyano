@@ -1,6 +1,7 @@
 ﻿namespace Scyano
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using FluentAssertions;
     using Xunit;
 
@@ -44,10 +45,12 @@
             result.Should().NotBeNull();
         }
 
+        [ExcludeFromCodeCoverage]
         private class NoConsumerTestClass
         {
         }
 
+        [ExcludeFromCodeCoverage]
         private class ConsumerTestClass
         {
             [MessageConsumer]
@@ -56,6 +59,7 @@
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private class ConsumerWithWrongSignatureTestClass
         {
             [MessageConsumer]
