@@ -1,6 +1,5 @@
 ﻿namespace Scyano.Tasks
 {
-
     public class DequeueTask<TMessage> : IDequeueTask<TMessage>
     {
         private IMessageProcessor<TMessage> messageProcessor;

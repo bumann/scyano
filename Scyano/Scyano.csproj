@@ -41,7 +41,6 @@
     <Compile Include="Core\IScyanoMethodInfo.cs" />
     <Compile Include="Core\ScyanoException.cs" />
     <Compile Include="Core\ScyanoMethodInfo.cs" />
-    <Compile Include="Core\ScyanoTask.cs" />
     <Compile Include="Core\ScyanoTaskExecutor.cs" />
     <Compile Include="Core\ScyanoTokenSource.cs" />
     <Compile Include="IMessageProcessor.cs" />
@@ -54,7 +53,6 @@
     <Compile Include="Core\IScyanoTokenSource.cs" />
     <Compile Include="Tasks\IDequeueTask.cs" />
     <Compile Include="Core\IScyanoFireAndForgetTask.cs" />
-    <Compile Include="IMessageConsumerRetriever.cs" />
     <Compile Include="IMessageQueueController.cs" />
     <Compile Include="IScyano.cs" />
     <Compile Include="MessageQueueController.cs" />

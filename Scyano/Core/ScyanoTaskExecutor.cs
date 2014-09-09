@@ -17,11 +17,6 @@
 
         public bool IsRunning { get; private set; }
 
-        public void Initialize(Action task)
-        {
-            this.Initialize(new ScyanoTask(task));
-        }
-
         public void Initialize(IScyanoTask task)
         {
             this.worker = new Task(() => this.Run(task), this.scyanoTokenSource.Token);

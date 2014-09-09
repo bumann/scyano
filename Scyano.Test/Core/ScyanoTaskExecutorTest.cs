@@ -1,5 +1,6 @@
 ﻿namespace Scyano.Core
 {
+    using System;
     using FluentAssertions;
     using Moq;
     using Xunit;
@@ -24,11 +25,29 @@
         }
 
         [Fact]
+        public void StartOrResume_WhenStartedTwice_MustNotThrow()
+        {
+            this.testee.StartOrResume();
+            
+            this.testee.Invoking(x => x.StartOrResume())
+                .ShouldNotThrow<Exception>();
+        }
+
+        [Fact]
         public void Suspend_MustSetIsRunningToFalse()
         {
+            this.testee.StartOrResume();
+
             this.testee.Suspend();
 
             this.testee.IsRunning.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Suspend_WhenNotStarted_MustNotThrow()
+        {
+            this.testee.Invoking(x => x.Suspend())
+                .ShouldNotThrow<Exception>();
         }
 
         [Fact]
