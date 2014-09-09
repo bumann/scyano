@@ -59,6 +59,26 @@
         }
 
         [Fact]
+        public void Initialize_MustInitializeDequeueTask()
+        {
+            var messageProcessor = Mock.Of<IMessageProcessor<object>>();
+
+            this.testee.Initialize(messageProcessor);
+
+            this.dequeueTask.Verify(x => x.Initialize(messageProcessor, this.queueController.Object), Times.Once());
+        }
+
+        [Fact]
+        public void Initialize_MustInitializeTaskExecutor()
+        {
+            var messageProcessor = Mock.Of<IMessageProcessor<object>>();
+
+            this.testee.Initialize(messageProcessor);
+
+            this.taskExecutor.Verify(x => x.Initialize(this.dequeueTask.Object), Times.Once());
+        }
+
+        [Fact]
         public void Start_WhenInitialized_MustExecuteDequeueTask()
         {
             this.testee.Initialize(Mock.Of<IMessageProcessor<object>>());

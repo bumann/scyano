@@ -50,9 +50,7 @@ namespace Scyano
 
             this.messageProcessor = processor;
 
-            this.dequeueTask.Initialize(
-               this.messageProcessor,
-               this.messageQueueController);
+            this.dequeueTask.Initialize(this.messageProcessor, this.messageQueueController);
             this.scyanoTaskExecutor.Initialize(this.dequeueTask);
         }
 
