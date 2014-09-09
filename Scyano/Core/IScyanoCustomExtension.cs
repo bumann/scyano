@@ -1,11 +1,11 @@
 ﻿namespace Scyano.Core
 {
-    public interface IScyanoCustomExtension
+    public interface IScyanoCustomExtension<TMessage>
     {
-        IScyano Scyano { get; set; }
+        IScyano<TMessage> Scyano { get; set; }
 
-        void MessageGetsQueued(object message);
+        void MessageGetsQueued(TMessage message);
 
-        void MessageQueued(object message);
+        void MessageQueued(TMessage message);
     }
 }

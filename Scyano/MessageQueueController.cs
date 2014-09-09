@@ -4,19 +4,19 @@
     using System.Threading;
     using Core;
 
-    public class MessageQueueController : IMessageQueueController
+    public class MessageQueueController<TMessage> : IMessageQueueController<TMessage>
     {
         private readonly object queueLock;
-        private readonly Queue<object> messageQueue;
+        private readonly Queue<TMessage> messageQueue;
         private readonly ManualResetEventSlim waitHandle;
-        private readonly IList<IScyanoCustomExtension> customExtensions;
+        private readonly IList<IScyanoCustomExtension<TMessage>> customExtensions;
 
         public MessageQueueController()
         {
             this.queueLock = new object();
-            this.messageQueue = new Queue<object>();
+            this.messageQueue = new Queue<TMessage>();
             this.waitHandle = new ManualResetEventSlim();
-            this.customExtensions = new List<IScyanoCustomExtension>();
+            this.customExtensions = new List<IScyanoCustomExtension<TMessage>>();
         }
 
         public int MessageCount
@@ -24,17 +24,17 @@
             get { return this.messageQueue.Count; }
         }
 
-        public void Add(IScyanoCustomExtension extension)
+        public void Add(IScyanoCustomExtension<TMessage> extension)
         {
             this.customExtensions.Add(extension);
         }
 
-        public void Remove(IScyanoCustomExtension extension)
+        public void Remove(IScyanoCustomExtension<TMessage> extension)
         {
             this.customExtensions.Remove(extension);
         }
 
-        public void Enqueue(object message)
+        public void Enqueue(TMessage message)
         {
             Monitor.Enter(this.queueLock);
 
@@ -63,7 +63,7 @@
             this.waitHandle.Set();
         }
 
-        public object Dequeue()
+        public TMessage Dequeue()
         {
             Monitor.Enter(this.queueLock);
 
@@ -75,7 +75,7 @@
                 Monitor.Enter(this.queueLock);
             }
 
-            object message = this.messageQueue.Dequeue();
+            TMessage message = this.messageQueue.Dequeue();
             Monitor.PulseAll(this.queueLock);
             Monitor.Exit(this.queueLock);
             return message;

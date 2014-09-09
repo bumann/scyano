@@ -2,8 +2,8 @@
 {
     using Core;
 
-    public interface IDequeueTask : IScyanoTask
+    public interface IDequeueTask<TMessage> : IScyanoTask
     {
-        void Initialize(object consumer, IScyanoMethodInfo consumerMethod, IMessageQueueController queueController);
+        void Initialize(IMessageProcessor<TMessage> processor, IMessageQueueController<TMessage> queueController);
     }
 }

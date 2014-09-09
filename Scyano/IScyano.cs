@@ -2,20 +2,20 @@ namespace Scyano
 {
     using Core;
 
-    public interface IScyano
+    public interface IScyano<TMessage>
     {
         int MessageCount { get; }
 
-        void Initialize(object messageConsumer);
+        void Initialize(IMessageProcessor<TMessage> processor);
 
         void Start();
 
         void Stop();
 
-        void Enqueue(object message);
+        void Enqueue(TMessage message);
 
-        void Add(IScyanoCustomExtension extension);
+        void Add(IScyanoCustomExtension<TMessage> extension);
 
-        void Remove(IScyanoCustomExtension extension);
+        void Remove(IScyanoCustomExtension<TMessage> extension);
     }
 }

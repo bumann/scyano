@@ -1,27 +1,22 @@
 ﻿namespace Scyano.Tasks
 {
-    using Core;
     using Moq;
     using Xunit;
 
     public class DequeueTaskTest
     {
-        private readonly DequeueTask testee;
+        private readonly DequeueTask<object> testee;
 
         public DequeueTaskTest()
         {
-            this.testee = new DequeueTask();
-        }
-
-        public interface IConsumer
-        {
+            this.testee = new DequeueTask<object>();
         }
 
         [Fact]
         public void Execute_MustDequeueMessageQueue()
         {
-            var queue = new Mock<IMessageQueueController>();
-            this.testee.Initialize(Mock.Of<IConsumer>(), Mock.Of<IScyanoMethodInfo>(), queue.Object);
+            var queue = new Mock<IMessageQueueController<object>>();
+            this.testee.Initialize(Mock.Of<IMessageProcessor<object>>(), queue.Object);
 
             this.testee.Execute();
 
@@ -29,31 +24,26 @@
         }
 
         [Fact]
-        public void Execute_WhenNoMessageAvailable_MustNotInvokeConsumer()
+        public void Execute_WhenNoMessageAvailable_MustNotProcessMessage()
         {
-            var scyanoMethodInfo = new Mock<IScyanoMethodInfo>();
-            this.testee.Initialize(Mock.Of<IConsumer>(), scyanoMethodInfo.Object, Mock.Of<IMessageQueueController>());
+            var processor = new Mock<IMessageProcessor<object>>();
+            this.testee.Initialize(processor.Object, Mock.Of<IMessageQueueController<object>>());
 
             this.testee.Execute();
 
-            scyanoMethodInfo.Verify(x => x.Invoke(It.IsAny<object>(), It.IsAny<object[]>()), Times.Never());
+            processor.Verify(x => x.ProcessMessage(It.IsAny<object>()), Times.Never());
         }
 
         [Fact]
-        public void Execute_WhenMessageAvailable_MustInvokeConsumer()
+        public void Execute_WhenMessageAvailable_MustProcessMessage()
         {
-            var consumer = new Mock<IConsumer>();
-            var scyanoMethodInfo = new Mock<IScyanoMethodInfo>();
-            var messageQueueController = new Mock<IMessageQueueController>();
-            var message = new object();
-            messageQueueController.Setup(x => x.Dequeue())
-                .Returns(message);
-            this.testee.Initialize(consumer.Object, scyanoMethodInfo.Object, messageQueueController.Object);
+            var processor = new Mock<IMessageProcessor<object>>();
+            var messageQueueController = new Mock<IMessageQueueController<object>> { DefaultValue = DefaultValue.Mock };
+            this.testee.Initialize(processor.Object, messageQueueController.Object);
 
             this.testee.Execute();
 
-            scyanoMethodInfo.Verify(x => x.Invoke(consumer.Object, new[] { message }), Times.Once());
+            processor.Verify(x => x.ProcessMessage(It.IsAny<object>()), Times.Once());
         }
     }
-
 }

@@ -4,27 +4,24 @@ namespace Scyano
     using Core;
     using Tasks;
 
-    public class Scyano : IScyano
+    public class Scyano<TMessage> : IScyano<TMessage>
     {
-        public const string NoValidMessageConsumer = "No message queue consumer provided. Initialize with a valid message consumer!";
+        public const string NoValidMessageProcessor = "No message queue consumer provided. Initialize with a valid message consumer!";
         public const string AlreadyInitialized = "Scyano is already initialized. Do not call Initialize() more than once!";
                 
-        private readonly IMessageConsumerRetriever messageConsumerRetriever;
-        private readonly IMessageQueueController messageQueueController;
+        private readonly IMessageQueueController<TMessage> messageQueueController;
         private readonly IScyanoTaskExecutor scyanoTaskExecutor;
         private readonly IScyanoFireAndForgetTask scyanoFireAndForgetTask;
-        private readonly IDequeueTask dequeueTask;
+        private readonly IDequeueTask<TMessage> dequeueTask;
 
-        private object messageConsumer;
+        private IMessageProcessor<TMessage> messageProcessor;
         
         public Scyano(
-            IMessageConsumerRetriever messageConsumerRetriever,
-            IMessageQueueController messageQueueController, 
+            IMessageQueueController<TMessage> messageQueueController, 
             IScyanoTaskExecutor scyanoTaskExecutor,
             IScyanoFireAndForgetTask scyanoFireAndForgetTask,
-            IDequeueTask dequeueTask)
+            IDequeueTask<TMessage> dequeueTask)
         {
-            this.messageConsumerRetriever = messageConsumerRetriever;
             this.messageQueueController = messageQueueController;
             this.scyanoTaskExecutor = scyanoTaskExecutor;
             this.scyanoFireAndForgetTask = scyanoFireAndForgetTask;
@@ -39,30 +36,29 @@ namespace Scyano
             }
         }
 
-        public void Initialize(object messageQueueConsumer)
+        public void Initialize(IMessageProcessor<TMessage> processor)
         {
-            if (messageQueueConsumer == null)
+            if (processor == null)
             {
-                throw new ArgumentNullException("messageQueueConsumer", NoValidMessageConsumer);
+                throw new ArgumentNullException("processor", NoValidMessageProcessor);
             }
 
-            if (this.messageConsumer != null)
+            if (this.messageProcessor != null)
             {
                 throw new InvalidOperationException(AlreadyInitialized);
             }
 
-            this.messageConsumer = messageQueueConsumer;
+            this.messageProcessor = processor;
 
             this.dequeueTask.Initialize(
-               this.messageConsumer,
-               this.messageConsumerRetriever.Retrieve(this.messageConsumer),
+               this.messageProcessor,
                this.messageQueueController);
             this.scyanoTaskExecutor.Initialize(this.dequeueTask);
         }
 
         public void Start()
         {
-            if (this.messageConsumer == null)
+            if (this.messageProcessor == null)
             {
                 throw new InvalidOperationException("Scyano is not initialized. Initialize Scyano!");
             }
@@ -75,17 +71,17 @@ namespace Scyano
             this.scyanoTaskExecutor.Suspend();
         }
 
-        public void Enqueue(object message)
+        public void Enqueue(TMessage message)
         {
             this.scyanoFireAndForgetTask.Run(() => this.messageQueueController.Enqueue(message));
         }
 
-        public void Add(IScyanoCustomExtension extension)
+        public void Add(IScyanoCustomExtension<TMessage> extension)
         {
             this.messageQueueController.Add(extension);
         }
 
-        public void Remove(IScyanoCustomExtension extension)
+        public void Remove(IScyanoCustomExtension<TMessage> extension)
         {
             this.messageQueueController.Remove(extension);
         }

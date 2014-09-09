@@ -2,16 +2,16 @@
 {
     using Core;
 
-    public interface IMessageQueueController
+    public interface IMessageQueueController<TMessage>
     {
         int MessageCount { get; }
 
-        void Add(IScyanoCustomExtension extension);
+        void Add(IScyanoCustomExtension<TMessage> extension);
 
-        void Remove(IScyanoCustomExtension extension);
+        void Remove(IScyanoCustomExtension<TMessage> extension);
 
-        void Enqueue(object message);
+        void Enqueue(TMessage message);
 
-        object Dequeue();
+        TMessage Dequeue();
     }
 }

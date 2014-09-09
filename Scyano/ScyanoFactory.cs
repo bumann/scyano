@@ -8,15 +8,13 @@
     /// </summary>
     public class ScyanoFactory
     {
-        public static IScyano Create()
+        public static IScyano<TMessage> Create<TMessage>()
         {
-            var messageConsumerRetriever = new MessageConsumerRetriever();
-            var messageQueueController = new MessageQueueController();
+            var messageQueueController = new MessageQueueController<TMessage>();
             var scyanoTaskExecutor = new ScyanoTaskExecutor(new ScyanoTokenSource());
             var scyanoFireAndForgetTask = new ScyanoFireAndForgetTask();
-            var dequeueTask = new DequeueTask();
-            return new Scyano(
-                messageConsumerRetriever,
+            var dequeueTask = new DequeueTask<TMessage>();
+            return new Scyano<TMessage>(
                 messageQueueController,
                 scyanoTaskExecutor,
                 scyanoFireAndForgetTask,

@@ -9,22 +9,19 @@
 
     public class ScyanoTest
     {
-        private readonly Mock<IMessageConsumerRetriever> consumerRetriever;
-        private readonly Mock<IMessageQueueController> queueController;
+        private readonly Mock<IMessageQueueController<object>> queueController;
         private readonly Mock<IScyanoTaskExecutor> taskExecutor;
         private readonly Mock<IScyanoFireAndForgetTask> enqueueTask;
-        private readonly Mock<IDequeueTask> dequeueTask;
-        private readonly Scyano testee;
+        private readonly Mock<IDequeueTask<object>> dequeueTask;
+        private readonly Scyano<object> testee;
 
         public ScyanoTest()
         {
-            this.consumerRetriever = new Mock<IMessageConsumerRetriever>();
-            this.queueController = new Mock<IMessageQueueController>();
+            this.queueController = new Mock<IMessageQueueController<object>>();
             this.enqueueTask = new Mock<IScyanoFireAndForgetTask>();
-            this.dequeueTask = new Mock<IDequeueTask>();
+            this.dequeueTask = new Mock<IDequeueTask<object>>();
             this.taskExecutor = new Mock<IScyanoTaskExecutor>();
-            this.testee = new Scyano(
-                this.consumerRetriever.Object,
+            this.testee = new Scyano<object>(
                 this.queueController.Object,
                 this.taskExecutor.Object,
                 this.enqueueTask.Object,
@@ -32,39 +29,39 @@
         }
 
         [Fact]
+        public void MessageCount_MustReturnMessageQueueCount()
+        {
+            const int Value = 22;
+            this.queueController.Setup(x => x.MessageCount)
+                .Returns(Value);
+
+            int result = this.testee.MessageCount;
+
+            result.Should().Be(Value);
+        }
+
+        [Fact]
         public void Initialize_WhenInitializedWithoutConsumer_MustThrow()
         {
             this.testee.Invoking(x => x.Initialize(null))
                 .ShouldThrow<ArgumentNullException>()
-                .WithMessage(Scyano.NoValidMessageConsumer + "\r\nParameter name: messageQueueConsumer");
+                .WithMessage(Scyano<object>.NoValidMessageProcessor + "\r\nParameter name: processor");
         }
 
         [Fact]
         public void Initialize_WhenAlreadyInitialized_MustThrow()
         {
-            var consumer = new Consumer();
+            this.testee.Initialize(Mock.Of<IMessageProcessor<object>>());
 
-            this.testee.Initialize(consumer);
-
-            this.testee.Invoking(x => x.Initialize(consumer))
+            this.testee.Invoking(x => x.Initialize(Mock.Of<IMessageProcessor<object>>()))
                 .ShouldThrow<InvalidOperationException>()
-                .WithMessage(Scyano.AlreadyInitialized);
-        }
-
-        [Fact]
-        public void Initialize_MustRetrieveConsumer()
-        {
-            var consumer = new Consumer();
-
-            this.testee.Initialize(consumer);
-
-            this.consumerRetriever.Verify(x => x.Retrieve(consumer), Times.Once());
+                .WithMessage(Scyano<object>.AlreadyInitialized);
         }
 
         [Fact]
         public void Start_WhenInitialized_MustExecuteDequeueTask()
         {
-            this.testee.Initialize(new Consumer());
+            this.testee.Initialize(Mock.Of<IMessageProcessor<object>>());
 
             this.testee.Start();
 
@@ -111,7 +108,7 @@
         [Fact]
         public void Add_MustAddExtension()
         {
-            var extension = new Mock<IScyanoCustomExtension>();
+            var extension = new Mock<IScyanoCustomExtension<object>>();
 
             this.testee.Add(extension.Object);
 
@@ -121,15 +118,11 @@
         [Fact]
         public void Remove_MustRemoveExtension()
         {
-            var extension = new Mock<IScyanoCustomExtension>();
+            var extension = new Mock<IScyanoCustomExtension<object>>();
 
             this.testee.Remove(extension.Object);
 
             this.queueController.Verify(x => x.Remove(extension.Object), Times.Once());
-        }
-
-        private class Consumer
-        {
         }
     }
 }

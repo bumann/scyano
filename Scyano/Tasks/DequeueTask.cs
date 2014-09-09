@@ -1,26 +1,23 @@
 ﻿namespace Scyano.Tasks
 {
-    using Core;
 
-    public class DequeueTask : IDequeueTask
+    public class DequeueTask<TMessage> : IDequeueTask<TMessage>
     {
-        private object messageConsumer;
-        private IScyanoMethodInfo messageConsumerMethodInfo;
-        private IMessageQueueController messageQueueController;
+        private IMessageProcessor<TMessage> messageProcessor;
+        private IMessageQueueController<TMessage> messageQueueController;
 
-        public void Initialize(object consumer, IScyanoMethodInfo consumerMethod, IMessageQueueController queueController)
+        public void Initialize(IMessageProcessor<TMessage> processor, IMessageQueueController<TMessage> queueController)
         {
-            this.messageConsumer = consumer;
-            this.messageConsumerMethodInfo = consumerMethod;
+            this.messageProcessor = processor;
             this.messageQueueController = queueController;
         }
 
         public void Execute()
         {
-            object message = this.messageQueueController.Dequeue();
+            TMessage message = this.messageQueueController.Dequeue();
             if (message != null)
             {
-                this.messageConsumerMethodInfo.Invoke(this.messageConsumer, new[] { message });
+                this.messageProcessor.ProcessMessage(message);
             }
         }
 
