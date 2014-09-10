@@ -1,6 +1,6 @@
-﻿namespace Scyano
+﻿namespace Scyano.MessageProcessing
 {
-    using Core;
+    using Scyano.Core;
 
     public interface IMessageQueueController<TMessage>
     {

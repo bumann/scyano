@@ -1,5 +1,7 @@
 ﻿namespace Scyano.Tasks
 {
+    using Scyano.MessageProcessing;
+
     public class DequeueTask<TMessage> : IDequeueTask<TMessage>
     {
         private IMessageProcessor<TMessage> messageProcessor;
@@ -19,6 +21,5 @@
                 this.messageProcessor.ProcessMessage(message);
             }
         }
-
     }
 }

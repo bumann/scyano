@@ -1,8 +1,8 @@
-﻿namespace Scyano
+﻿namespace Scyano.MessageProcessing
 {
-    using Core;
     using FluentAssertions;
     using Moq;
+    using Scyano.Core;
     using Xunit;
 
     public class MessageQueueControllerTest

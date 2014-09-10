@@ -2,6 +2,7 @@
 {
     using Core;
     using Ninject.Syntax;
+    using Scyano.MessageProcessing;
     using Tasks;
 
     public static class BindingRootExtensions

@@ -1,6 +1,7 @@
 ﻿namespace Scyano
 {
     using Core;
+    using Scyano.MessageProcessing;
     using Tasks;
 
     /// <summary>

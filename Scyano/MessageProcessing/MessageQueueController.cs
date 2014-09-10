@@ -1,8 +1,8 @@
-﻿namespace Scyano
+﻿namespace Scyano.MessageProcessing
 {
     using System.Collections.Generic;
     using System.Threading;
-    using Core;
+    using Scyano.Core;
 
     public class MessageQueueController<TMessage> : IMessageQueueController<TMessage>
     {

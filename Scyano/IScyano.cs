@@ -1,6 +1,7 @@
 namespace Scyano
 {
     using Core;
+    using Scyano.MessageProcessing;
 
     public interface IScyano<TMessage>
     {

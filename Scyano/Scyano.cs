@@ -2,6 +2,7 @@ namespace Scyano
 {
     using System;
     using Core;
+    using Scyano.MessageProcessing;
     using Tasks;
 
     public class Scyano<TMessage> : IScyano<TMessage>

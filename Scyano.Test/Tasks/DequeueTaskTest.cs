@@ -1,6 +1,7 @@
 ﻿namespace Scyano.Tasks
 {
     using Moq;
+    using Scyano.MessageProcessing;
     using Xunit;
 
     public class DequeueTaskTest

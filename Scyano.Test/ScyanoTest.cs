@@ -4,6 +4,7 @@
     using Core;
     using FluentAssertions;
     using Moq;
+    using Scyano.MessageProcessing;
     using Tasks;
     using Xunit;
 

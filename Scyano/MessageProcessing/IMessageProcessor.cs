@@ -1,4 +1,4 @@
-﻿namespace Scyano
+﻿namespace Scyano.MessageProcessing
 {
     public interface IMessageProcessor<in TMessage>
     {
